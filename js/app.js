@@ -14,7 +14,7 @@ const obetenerCriptomonedas = criptomonedas => new Promise(resoleve => {
 
 document.addEventListener("DOMContentLoaded", ()=> {
     consultarCriptomonedas();
-    formulario.addEventListener("click", submitForm);
+    formulario.addEventListener("submit", submitForm);
 
     criptoSelect.addEventListener("change", leerValor);
     monedaSelect.addEventListener("change", leerValor);
@@ -43,6 +43,7 @@ function selectCriptomonedas(criptomonedas){
         criptoSelect.append(option);
     });
 }
+
 function submitForm(e){
     e.preventDefault();
     const {moneda, criptomoneda} = objBusqueda;
@@ -51,6 +52,26 @@ function submitForm(e){
         mostrarAlerta("Ambos Campos Son Obligatorios");
         return;
     }
+
+    //Consultar API
+    consultarAPI();
+}
+
+function consultarAPI(){
+    const {moneda, criptomoneda} = objBusqueda;
+
+    const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`;
+    
+
+    fetch(url)
+    .then(res => res.json())
+    .then(res => {
+        mostrarCotizacion(res.DISPLAY[criptomoneda][moneda])
+    })
+}
+
+function mostrarCotizacion (cotizacion){
+    console.log(cotizacion)
 }
 
 function mostrarAlerta(mensaje){
@@ -68,3 +89,4 @@ function mostrarAlerta(mensaje){
         },3000) 
     }
 }
+
